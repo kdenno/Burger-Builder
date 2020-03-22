@@ -21,7 +21,8 @@ class BurgerBuilder extends Component {
       meat: 0
     },
     totalPrice: 4,
-    isPurchasable: false
+    isPurchasable: false,
+    purchasing: false
   };
   addIngredientHandler = type => {
     const OldCount = this.state.ingredients[type];
@@ -56,19 +57,46 @@ class BurgerBuilder extends Component {
   };
   updatePurchasable(ingredients) {
     const totalIngredientPrice = Object.keys(ingredients)
-      .map(key => {return ingredients[key]})
+      .map(key => {
+        return ingredients[key];
+      })
       .reduce((sum, el) => {
-       return  sum + el;
+        return sum + el;
       }, 0);
     this.setState({ isPurchasable: totalIngredientPrice > 0 });
   }
+  purchasingHandler = () => {
+    this.setState({ purchasing: true });
+  };
+  purchaseCancelledHandler = () => {
+    this.setState({ purchasing: false });
+  };
+  buyerActionHandler = action => {
+    switch (action) {
+      case "cancel":
+        this.purchaseCancelledHandler();
+        break;
+      case "buy":
+        console.log("proceeding to checkout");
+        break;
+
+      default:
+        return null;
+    }
+  };
 
   render() {
     return (
       <Aux>
-        <Overlay>
-          <OrderSummary ingredients={this.state.ingredients}/>
-
+        <Overlay
+          show={this.state.purchasing}
+          purchaseCancelled={this.purchaseCancelledHandler}
+        >
+          <OrderSummary
+            buyerAction={this.buyerActionHandler}
+            ingredients={this.state.ingredients}
+            price={this.state.totalPrice}
+          />
         </Overlay>
 
         <Burger ingredients={this.state.ingredients} />
@@ -77,6 +105,7 @@ class BurgerBuilder extends Component {
           ingredientRemoved={this.removeIngredientHandler}
           price={this.state.totalPrice}
           purhasable={this.state.isPurchasable}
+          ordered={this.purchasingHandler}
         />
       </Aux>
     );
