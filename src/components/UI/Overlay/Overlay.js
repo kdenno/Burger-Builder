@@ -1,22 +1,31 @@
-import React from "react";
+import React, { Component } from "react";
 import styles from "./Overlay.module.css";
 import BackDrop from "../Backdrop/Backdrop";
 import Aux from "../../../hoc/Aux";
 
-const overlay = props => {
-  return (
+class Overlay extends Component {
+  // only reload this component if show changes
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.show !== this.props.show;
+  }
+  render() {
+    return (
       <Aux>
-      <BackDrop show={props.show} backdropClicked={props.purchaseCancelled}/>
-    <div
-      className={styles.Modal}
-      style={{
-        transform: props.show ? "translateY(0)" : "translateY(-100vh)",
-        opacity: props.show ? "1" : "0"
-      }}
-    >
-      {props.children}
-    </div>
-    </Aux>
-  );
-};
-export default overlay;
+        <BackDrop
+          show={this.props.show}
+          backdropClicked={this.props.purchaseCancelled}
+        />
+        <div
+          className={styles.Modal}
+          style={{
+            transform: this.props.show ? "translateY(0)" : "translateY(-100vh)",
+            opacity: this.props.show ? "1" : "0"
+          }}
+        >
+          {this.props.children}
+        </div>
+      </Aux>
+    );
+  }
+}
+export default Overlay;
