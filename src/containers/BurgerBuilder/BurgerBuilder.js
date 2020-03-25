@@ -4,6 +4,8 @@ import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 import Overlay from "../../components/UI/Overlay/Overlay";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
+import Spinner from "../../components/UI/Spinner/Spinner";
+import axios from "../../axios-orders";
 
 const INGREDIENT_PRICES = {
   salad: 0.4,
@@ -22,7 +24,8 @@ class BurgerBuilder extends Component {
     },
     totalPrice: 4,
     isPurchasable: false,
-    purchasing: false
+    purchasing: false,
+    loading: false
   };
   addIngredientHandler = type => {
     const OldCount = this.state.ingredients[type];
@@ -77,7 +80,32 @@ class BurgerBuilder extends Component {
         this.purchaseCancelledHandler();
         break;
       case "buy":
-        console.log("proceeding to checkout");
+        this.setState({ loading: true });
+        const order = {
+          ingredientes: this.state.ingredients,
+          price: this.state.totalPrice.toFixed(2),
+          customer: {
+            name: "KDenno",
+            address: {
+              street: "street 123",
+              zipcode: "3245",
+              country: "Uganda"
+            },
+            email: "test@test.com"
+          },
+          deliverymethod: "fastest"
+        };
+        axios
+          .post("/orders.json", order)
+          .then(res => {
+            this.setState({ loading: false, purchasing: false });
+
+            console.log(res);
+          })
+          .catch(err => {
+            this.setState({ loading: false , purchasing: false});
+            console.log(err);
+          });
         break;
 
       default:
@@ -86,17 +114,23 @@ class BurgerBuilder extends Component {
   };
 
   render() {
+    let orderSummary = 
+      <OrderSummary
+        buyerAction={this.buyerActionHandler}
+        ingredients={this.state.ingredients}
+        price={this.state.totalPrice}
+      />
+    
+    if (this.state.loading) {
+      orderSummary = <Spinner />;
+    }
     return (
       <Aux>
         <Overlay
           show={this.state.purchasing}
           purchaseCancelled={this.purchaseCancelledHandler}
         >
-          <OrderSummary
-            buyerAction={this.buyerActionHandler}
-            ingredients={this.state.ingredients}
-            price={this.state.totalPrice}
-          />
+          {orderSummary}
         </Overlay>
 
         <Burger ingredients={this.state.ingredients} />
