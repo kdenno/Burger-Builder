@@ -24,7 +24,7 @@
         align-items: center;
         box-sizing: border-box;
         height: 100%;
-        width: 100%;
+        width: 150px;
     }
     .NavigationItem a {
         text-decoration: none;
