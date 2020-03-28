@@ -87,33 +87,7 @@ class BurgerBuilder extends Component {
         this.purchaseCancelledHandler();
         break;
       case "checkout":
-        /*
-        this.setState({ loading: true });
-        const order = {
-          ingredientes: this.state.ingredients,
-          price: this.state.totalPrice.toFixed(2),
-          customer: {
-            name: "KDenno",
-            address: {
-              street: "street 123",
-              zipcode: "3245",
-              country: "Uganda"
-            },
-            email: "test@test.com"
-          },
-          deliverymethod: "fastest"
-        };
-        axios
-          .post("/orders.json", order)
-          .then(res => {
-            this.setState({ loading: false, purchasing: false });
-
-            console.log(res);
-          })
-          .catch(err => {
-            this.setState({ loading: false, purchasing: false });
-            console.log(err);
-          }); */
+      
         const queryParams = [];
         for (let i in this.state.ingredients) {
           queryParams.push(
@@ -122,6 +96,11 @@ class BurgerBuilder extends Component {
               encodeURIComponent(this.state.ingredients[i])
           );
         }
+        queryParams.push(
+          encodeURIComponent("price") +
+            "=" +
+            encodeURIComponent(this.state.totalPrice)
+        );
         const queryString = queryParams.join("&");
         this.props.history.push({
           pathname: "/checkout",
@@ -137,11 +116,11 @@ class BurgerBuilder extends Component {
   render() {
     let orderSummary = null;
 
-    let burger = this.setState ? 
+    let burger = this.setState ? (
       <p>Ingredients cannot be fetched</p>
-     : 
+    ) : (
       <Spinner />
-    ;
+    );
     if (this.state.ingredients) {
       burger = (
         <Aux>
