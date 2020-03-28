@@ -86,7 +86,8 @@ class BurgerBuilder extends Component {
       case "cancel":
         this.purchaseCancelledHandler();
         break;
-      case "buy":
+      case "checkout":
+        /*
         this.setState({ loading: true });
         const order = {
           ingredientes: this.state.ingredients,
@@ -112,7 +113,20 @@ class BurgerBuilder extends Component {
           .catch(err => {
             this.setState({ loading: false, purchasing: false });
             console.log(err);
-          });
+          }); */
+        const queryParams = [];
+        for (let i in this.state.ingredients) {
+          queryParams.push(
+            encodeURIComponent(i) +
+              "=" +
+              encodeURIComponent(this.state.ingredients[i])
+          );
+        }
+        const queryString = queryParams.join("&");
+        this.props.history.push({
+          pathname: "/checkout",
+          search: "?" + queryString
+        });
         break;
 
       default:
@@ -123,11 +137,11 @@ class BurgerBuilder extends Component {
   render() {
     let orderSummary = null;
 
-    let burger = this.setState ? (
+    let burger = this.setState ? 
       <p>Ingredients cannot be fetched</p>
-    ) : (
+     : 
       <Spinner />
-    );
+    ;
     if (this.state.ingredients) {
       burger = (
         <Aux>

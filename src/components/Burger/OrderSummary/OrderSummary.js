@@ -25,7 +25,7 @@ class OrderSummary extends Component {
         <Button type="Danger" clicked={() => this.props.buyerAction("cancel")}>
           Cancel
         </Button>
-        <Button type="Success" clicked={() => this.props.buyerAction("buy")}>
+        <Button type="Success" clicked={() => this.props.buyerAction("checkout")}>
           Buy Now
         </Button>
       </div>
