@@ -1,8 +1,14 @@
 .Order {
-    width: 400px;
+    width: 80%;
     border: solid 1px #eee;
     box-shadow: 0 2px 3px #ccc;
     padding: 10px;
     margin: 10px auto;
     box-sizing: border-box;
+}
+.Ingreds {
+    text-transform: capitalize;
+    padding: 5px;
+    margin: 8px;
+    display: inline-block;
 }
