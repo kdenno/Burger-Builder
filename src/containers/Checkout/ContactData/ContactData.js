@@ -80,6 +80,15 @@ class ContactData extends Component {
         console.log(err);
       });
   };
+  onInputChangedHandler = (event, inputId) => {
+    // let's try to get access to the input value and change it
+    const updatedOrderForm = { ...this.state.orderForm }; // but remember this doenst do a deep clone
+    // now that we got access to the top tier objects we need to clone again
+    const updatedFormElement = { ...updatedOrderForm[inputId] };
+    updatedFormElement.value = event.target.value;
+    updatedOrderForm[inputId] = updatedFormElement;
+    this.setState({ orderForm: updatedOrderForm });
+  };
 
   render() {
     let formArrayElements = [];
@@ -97,6 +106,7 @@ class ContactData extends Component {
             elementtype={formElement.config.elementtype}
             elementconfig={formElement.config.elementconfig}
             value={formElement.config.value}
+            changed={event => this.onInputChangedHandler(event, formElement.id)}
           />
         ))}
 

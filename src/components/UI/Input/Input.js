@@ -9,7 +9,7 @@ const input = props => {
         <input
           className={styles.InputElement}
           {...props.elementconfig}
-          value={props.value}
+          value={props.value} onChange={props.changed}
         />
       );
       break;
@@ -18,14 +18,13 @@ const input = props => {
         <textarea
           className={styles.InputElement}
           {...props.elementconfig}
-          value={props.value}
+          value={props.value} onChange={props.changed}
         />
       );
       break;
     case ("select"):
-      console.log(props.elementconfig);
       inputElement = (
-        <select className={styles.InputElement} value={props.value}>
+        <select className={styles.InputElement} value={props.value} onChange={props.changed}>
           {props.elementconfig.options.map(option => (
             <option key={option.value} value={option.value}>
               {option.displayValue}
@@ -35,7 +34,6 @@ const input = props => {
       );
       break;
     default:
-      console.log(props.elementconfig);
       inputElement = (
         <input
           className={styles.InputElement}
