@@ -18,7 +18,8 @@ class ContactData extends Component {
         validation: {
           required: true
         },
-        valid: false
+        valid: false,
+        touched: false
       },
       street: {
         elementtype: "input",
@@ -30,7 +31,8 @@ class ContactData extends Component {
         validation: {
           required: true
         },
-        valid: false
+        valid: false,
+        touched: false
       },
       zipcode: {
         elementtype: "input",
@@ -44,7 +46,8 @@ class ContactData extends Component {
           minLength: 5,
           maxLength: 5
         },
-        valid: false
+        valid: false,
+        touched: false
       },
       country: {
         elementtype: "input",
@@ -56,7 +59,8 @@ class ContactData extends Component {
         validation: {
           required: true
         },
-        valid: false
+        valid: false,
+        touched: false
       },
       email: {
         elementtype: "input",
@@ -68,7 +72,8 @@ class ContactData extends Component {
         validation: {
           required: true
         },
-        valid: false
+        valid: false,
+        touched: false
       },
       deliverymethod: {
         elementtype: "select",
@@ -78,10 +83,16 @@ class ContactData extends Component {
             { value: "cheapest", displayValue: "Cheapest" }
           ]
         },
-        value: ""
+        validation:{
+          required: false
+        },
+        valid: true,
+        value: "cheapest",
+
       }
     },
-    loading: false
+    loading: false,
+    formValid: false
   };
   orderSubmitHandler = event => {
     event.preventDefault();
@@ -109,7 +120,7 @@ class ContactData extends Component {
       });
   };
   checkInputValidity(value, rules) {
-    isValid = true;
+    let isValid = true;
     if(rules.required) {
     isValid = value.trim() !== '' && isValid;
     }
@@ -130,9 +141,14 @@ class ContactData extends Component {
     // now that we got access to the top tier objects we need to clone again
     const updatedFormElement = { ...updatedOrderForm[inputId] };
     updatedFormElement.value = event.target.value;
-    updatedFormElement.valid = this.checkInputValidity(updatedFormElement.value, updatedFormElement.validation)
+    updatedFormElement.valid = this.checkInputValidity(updatedFormElement.value, updatedFormElement.validation);
+    updatedFormElement.touched = true;
+    let formValid = true;
+    for(let eachkey in updatedOrderForm){
+      formValid = updatedOrderForm[eachkey].valid && formValid;
+    }
     updatedOrderForm[inputId] = updatedFormElement;
-    this.setState({ orderForm: updatedOrderForm });
+    this.setState({ orderForm: updatedOrderForm, formValid: formValid});
   };
 
   render() {
@@ -151,11 +167,14 @@ class ContactData extends Component {
             elementtype={formElement.config.elementtype}
             elementconfig={formElement.config.elementconfig}
             value={formElement.config.value}
+            isvalid={formElement.config.valid} 
+            shouldvalidate={formElement.config.validation}
+            touched = {formElement.config.touched}
             changed={event => this.onInputChangedHandler(event, formElement.id)}
           />
         ))}
 
-        <Button type="Success">
+        <Button type="Success" disabled={!this.state.formValid}>
           ORDER NOW
         </Button>
       </form>
