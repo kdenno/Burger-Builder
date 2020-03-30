@@ -14,7 +14,11 @@ class ContactData extends Component {
           type: "text",
           placeholder: "Your Name"
         },
-        value: ""
+        value: "",
+        validation: {
+          required: true
+        },
+        valid: false
       },
       street: {
         elementtype: "input",
@@ -22,7 +26,11 @@ class ContactData extends Component {
           type: "text",
           placeholder: "Street"
         },
-        value: ""
+        value: "",
+        validation: {
+          required: true
+        },
+        valid: false
       },
       zipcode: {
         elementtype: "input",
@@ -30,7 +38,13 @@ class ContactData extends Component {
           type: "text",
           placeholder: "zip code"
         },
-        value: ""
+        value: "",
+        validation: {
+          required: true,
+          minLength: 5,
+          maxLength: 5
+        },
+        valid: false
       },
       country: {
         elementtype: "input",
@@ -38,7 +52,11 @@ class ContactData extends Component {
           type: "text",
           placeholder: "Country"
         },
-        value: ""
+        value: "",
+        validation: {
+          required: true
+        },
+        valid: false
       },
       email: {
         elementtype: "input",
@@ -46,7 +64,11 @@ class ContactData extends Component {
           type: "email",
           placeholder: "Email"
         },
-        value: ""
+        value: "",
+        validation: {
+          required: true
+        },
+        valid: false
       },
       deliverymethod: {
         elementtype: "select",
@@ -86,12 +108,29 @@ class ContactData extends Component {
         console.log(err);
       });
   };
+  checkInputValidity(value, rules) {
+    isValid = true;
+    if(rules.required) {
+    isValid = value.trim() !== '' && isValid;
+    }
+    if(rules.minLength) {
+      isValid = value.length >= rules.minLength  && isValid;
+
+    }
+    if(rules.maxLength) {
+      // only change it if its previous value was true
+      isValid = value.length <= rules.maxLength  && isValid;
+    }
+    return isValid;
+
+  }
   onInputChangedHandler = (event, inputId) => {
     // let's try to get access to the input value and change it
     const updatedOrderForm = { ...this.state.orderForm }; // but remember this doenst do a deep clone
     // now that we got access to the top tier objects we need to clone again
     const updatedFormElement = { ...updatedOrderForm[inputId] };
     updatedFormElement.value = event.target.value;
+    updatedFormElement.valid = this.checkInputValidity(updatedFormElement.value, updatedFormElement.validation)
     updatedOrderForm[inputId] = updatedFormElement;
     this.setState({ orderForm: updatedOrderForm });
   };
