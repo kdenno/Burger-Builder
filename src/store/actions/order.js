@@ -35,7 +35,7 @@ export const purchaseBurgerStart = (orderData) => {
       .post("/orders.json", orderData)
       .then((res) => {
         // dispatch actions
-        dispatch(purchaseBurgerSuccess(res.id, orderData));
+        dispatch(purchaseBurgerSuccess(res.data.name, orderData));
       })
       .catch((err) => {
         dispatch(purchaseBurgerFail(err));
