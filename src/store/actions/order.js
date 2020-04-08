@@ -26,6 +26,11 @@ export const purchaseBurgerInit = () => {
   };
 };
 
+export const checkoutInit = () => {
+  return {
+    type: actionTypes.CHECKOUT_INIT
+  };
+}
 // dealing with Async actions
 export const purchaseBurgerStart = (orderData) => {
   return (dispatch) => {
