@@ -21,6 +21,21 @@ export const authFail = (error) => {
     error: error,
   };
 };
+export const logOut = () => {
+    return {
+        type: Actions.AUTH_LOGOUT
+    }
+}
+
+export const triggerExpiryTimer = (expiryTime) => {
+    return dispatch => {
+        setTimeout(() => {
+            dispatch(logOut());
+            
+        }, expiryTime * 1000);
+    }
+
+}
 
 // Trigger Async
 export const auth = (email, password, isSignUp) => {
@@ -40,6 +55,7 @@ export const auth = (email, password, isSignUp) => {
       .post( url,loginData)
       .then((resData) => {
         dispatch(authSuccess(resData.data.idToken, resData.localId));
+        dispatch(triggerExpiryTimer(resData.data.expiryTime));
       })
       .catch((error) => {
         dispatch(authFail(error.response.data.error));
