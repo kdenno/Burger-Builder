@@ -24,7 +24,7 @@ export const authFail = (error) => {
 
 // Trigger Async
 export const auth = (email, password, isSignUp) => {
-  return (dispatch) => {
+  return dispatch => {
     dispatch(authStart());
     let url = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyByq5J5WoJqX6SnjN67dCHrQaLTJFHxHkE";
     if(!isSignUp) {
@@ -39,12 +39,10 @@ export const auth = (email, password, isSignUp) => {
     axios
       .post( url,loginData)
       .then((resData) => {
-          console.log(resData);
         dispatch(authSuccess(resData.data.idToken, resData.localId));
       })
       .catch((error) => {
-          console.log(error);
-        dispatch(authFail(error));
+        dispatch(authFail(error.response.data.error));
       });
   };
 };

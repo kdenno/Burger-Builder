@@ -4,6 +4,7 @@ import Button from "../../components/UI/Button/Button";
 import styles from "./Auth.module.css";
 import {connect} from "react-redux";
 import * as Actions from "../../store/actions/index";
+import Spinner from "../../components/UI/Spinner/Spinner";
  
 
 class Auth extends Component {
@@ -92,7 +93,7 @@ onsubmitHandler = (event) => {
 }
 switchMode = () => {
     this.setState(prevState =>  { 
-        return {isSignUp: !prevState.isSignUp}
+        return {isSignUp: !prevState.isSignUp} 
     });
 }
 
@@ -101,7 +102,7 @@ switchMode = () => {
     for (let key in this.state.authForm) {
       formArrayElements.push({id: key, config: this.state.authForm[key]});
     }
-    const form = formArrayElements.map(formElement => <Input 
+    let form = formArrayElements.map(formElement => <Input 
         key={formElement.id}
         elementtype={formElement.config.elementtype}
         elementconfig={formElement.config.elementconfig}
@@ -110,8 +111,17 @@ switchMode = () => {
         shouldvalidate={formElement.config.validation}
         touched = {formElement.config.touched}
         changed={event => this.onInputChangedHandler(event, formElement.id)}/>);
+        if(this.props.loading) {
+            form = <Spinner/>
+        }
+        let errorMessage = null;
+        if(this.props.error) {
+        errorMessage = (<p>{this.props.error.message}</p>)
+
+        }
     return (
       <div className={styles.Auth}>
+          {errorMessage}
         <form onSubmit={this.onsubmitHandler}>
             {form}
             <Button type="Success">SUBMIT</Button>
@@ -122,6 +132,13 @@ switchMode = () => {
     );
   }
 }
+const mapStateToProps = state => {
+    return {
+        loading: state.auth.loading,
+        error: state.auth.error
+    }
+
+}
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -129,4 +146,4 @@ const mapDispatchToProps = dispatch => {
 
     }
 }
-export default connect(null, mapDispatchToProps)(Auth);
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);
