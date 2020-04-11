@@ -7,7 +7,7 @@ const initialState = {
 };
 
 const reducer = (state = initialState, action) => {
-  switch (action) {
+  switch (action.type) {
     case actionTypes.AUTH_START:
       return {
         ...state,
@@ -17,17 +17,17 @@ const reducer = (state = initialState, action) => {
     case actionTypes.AUTH_SUCCESS:
       return {
         ...state,
-        token: action.token,
+        token: action.idToken,
         userId: action.userId,
-        loading: false,
         error: false,
+        loading: false
       };
     case actionTypes.AUTH_FAIL:
       return {
         ...state,
         token: null,
         loading: false,
-        error: true,
+        error: action.error,
       };
     case actionTypes.AUTH_LOGOUT:
       return {

@@ -32,12 +32,12 @@ export const checkoutInit = () => {
   };
 }
 // dealing with Async actions
-export const purchaseBurgerStart = (orderData) => {
+export const purchaseBurgerStart = (orderData, token) => {
   return (dispatch) => {
     // trigger spinner
     dispatch(purchaseBurgerInit());
     axios
-      .post("/orders.json", orderData)
+      .post("/orders.json?auth="+token, orderData)
       .then((res) => {
         // dispatch actions
         dispatch(purchaseBurgerSuccess(res.data.name, orderData));
@@ -70,13 +70,13 @@ export const fetchOrderStart = () => {
   }
 }
 
-export const fetchOrders = () => {
+export const fetchOrders = (token) => {
   return dispatch => {
     // dispatch spinner action
     dispatch(fetchOrderStart());
   const fetchedOrders = [];
   axios
-    .get("/orders.json")
+    .get("/orders.json?auth="+token)
     .then(res => {
       for (let key in res.data) {
         fetchedOrders.push({ ...res.data[key], id: key });
