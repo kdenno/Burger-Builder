@@ -9,26 +9,45 @@ import Logout from "./containers/Auth/Logout/Logout";
 // always check state of Auth
 import { connect } from "react-redux";
 import * as Actions from "./store/actions/index";
-import { Route, Switch, withRouter } from "react-router-dom";
+import { Route, Switch, withRouter, Redirect } from "react-router-dom";
 
 class App extends Component{
   componentDidMount () {
     this.props.onTryAutoLogin();
   }
   render() {
+    let routes = (
+      <Switch>
+      <Route path="/auth" component={Auth} />
+      <Route path="/" exact component={BurgerBuilder} />
+      <Redirect to='/' />
+    </Switch>
+
+    );
+    if(this.props.isAuthenticated) {
+      routes = (
+        <Switch>
+        <Route path="/checkout" component={Checkout} />
+        <Route path="/orders" component={Orders} />
+        <Route path="/logout" component={Logout} />
+        <Route path="/" exact component={BurgerBuilder} />
+        <Redirect to="/" />
+      </Switch>
+      );
+    }
     return (
       <div>
         <Layout>
-          <Switch>
-            <Route path="/checkout" component={Checkout} />
-            <Route path="/orders" component={Orders} />
-            <Route path="/auth" component={Auth} />
-            <Route path="/logout" component={Logout} />
-            <Route path="/" exact component={BurgerBuilder} />
-          </Switch>
+        {routes}
         </Layout>
       </div>
     );
+  }
+}
+
+const mapStateToProps = state => {
+  return {
+    isAuthenticated: state.auth.token
   }
 }
 
@@ -38,4 +57,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default withRouter(connect(null, mapDispatchToProps)(App)); // connect on the main component drowns out the react router so we employ withRouter a higher order react component and wrap it around connect
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App)); // connect on the main component drowns out the react router so we employ withRouter a higher order react component and wrap it around connect
