@@ -36,6 +36,13 @@ export const triggerExpiryTimer = (expiryTime) => {
     }
 
 }
+export const setAuthRedirectPath = (path) => {
+  return {
+    type: ActionTypes.SET_AUTH_REDIRECT_PATH,
+    path: path
+  }
+
+}
 
 // Trigger Async
 export const auth = (email, password, isSignUp) => {
