@@ -7,6 +7,7 @@ import {connect} from "react-redux";
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import axios from "../../../axios-orders";
 import * as orderActions from "../../../store/actions/order";
+import * as checks from "../../../shared/utility";
 
 class ContactData extends Component {
   state = {
@@ -112,29 +113,14 @@ class ContactData extends Component {
     };
     this.props.onOrderBurger(order, this.props.token);
   };
-  checkInputValidity(value, rules) {
-    let isValid = true;
-    if(rules.required) {
-    isValid = value.trim() !== '' && isValid;
-    }
-    if(rules.minLength) {
-      isValid = value.length >= rules.minLength  && isValid;
-
-    }
-    if(rules.maxLength) {
-      // only change it if its previous value was true
-      isValid = value.length <= rules.maxLength  && isValid;
-    }
-    return isValid;
-
-  }
+ 
   onInputChangedHandler = (event, inputId) => {
     // let's try to get access to the input value and change it
     const updatedOrderForm = { ...this.state.orderForm }; // but remember this doenst do a deep clone
     // now that we got access to the top tier objects we need to clone again
     const updatedFormElement = { ...updatedOrderForm[inputId] };
     updatedFormElement.value = event.target.value;
-    updatedFormElement.valid = this.checkInputValidity(updatedFormElement.value, updatedFormElement.validation);
+    updatedFormElement.valid = checks.checkValidity(updatedFormElement.value, updatedFormElement.validation);
     updatedFormElement.touched = true;
     let formValid = true;
     for(let eachkey in updatedOrderForm){
